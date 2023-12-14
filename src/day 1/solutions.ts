@@ -27,7 +27,6 @@ const DIGIT_STRINGS = [
 
 const replaceDigitNames = (s: string) => {
 	let newString = s;
-	// biome-ignore lint/complexity/noForEach: <explanation>
 	DIGIT_STRINGS.forEach((digit, i) => {
 		newString = newString.replaceAll(digit, `${digit}${i + 1}${digit}`);
 	});

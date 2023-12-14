@@ -1,20 +1,18 @@
 {
-    "compilerOptions": {
-      "lib": ["ESNext"],
-      "module": "esnext",
-      "target": "esnext",
-      "moduleResolution": "bundler",
-      "moduleDetection": "force",
-      "allowImportingTsExtensions": true,
-      "noEmit": true,
-      "types": [
-        "bun-types" // add Bun global
-      ],
-      "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
-    "composite": true,
-    "downlevelIteration": true,
-    "allowSyntheticDefaultImports": true
-    }
-  }
+	"compilerOptions": {
+		"lib": ["ESNext"],
+		"module": "esnext",
+		"target": "esnext",
+		"moduleResolution": "bundler",
+		"moduleDetection": "force",
+		"allowImportingTsExtensions": true,
+		"noEmit": true,
+		"types": ["bun-types"],
+		"strict": true,
+		"forceConsistentCasingInFileNames": true,
+		"skipLibCheck": true,
+		"composite": true,
+		"downlevelIteration": true,
+		"allowSyntheticDefaultImports": true
+	}
+}

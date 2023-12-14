@@ -3,10 +3,20 @@
 	"organizeImports": {
 		"enabled": true
 	},
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git"
+	},
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true
+			"recommended": true,
+			"complexity": {
+				"noForEach": "off"
+			},
+			"style": {
+				"noNonNullAssertion": "off"
+			}
 		}
 	},
 	"formatter": {
