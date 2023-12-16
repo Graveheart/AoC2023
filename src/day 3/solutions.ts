@@ -10,6 +10,10 @@ export function isSymbol(char: string) {
 	return !NOT_SYMBOLS.has(char);
 }
 
+export function isGearSymbol(char: string) {
+	return char === "*";
+}
+
 const isInBounds = (schematic: string[][], row: number, col: number) => {
 	if (row < 0) return false;
 	if (row >= schematic.length) return false;
@@ -18,17 +22,72 @@ const isInBounds = (schematic: string[][], row: number, col: number) => {
 	return true;
 };
 
-const hasAdjacentSymbol = (schematic: string[][], row: number, col: number) => {
+const hasAdjacentSymbol = (
+	schematic: string[][],
+	row: number,
+	col: number,
+	check: (char: string) => boolean,
+) => {
 	for (let iRow = row - 1; iRow <= row + 1; iRow++) {
 		for (let iCol = col - 1; iCol <= col + 1; iCol++) {
 			if (!isInBounds(schematic, iRow, iCol)) continue;
-			if (isSymbol(schematic[iRow]![iCol]!)) return true;
+			if (check(schematic[iRow]![iCol]!)) return true;
 		}
 	}
 	return false;
 };
 
-export const getPartNumbers = (input: string) => {
+const getAdjacentGearSymbol = (
+	schematic: string[][],
+	row: number,
+	col: number,
+) => {
+	for (let iRow = row - 1; iRow <= row + 1; iRow++) {
+		for (let iCol = col - 1; iCol <= col + 1; iCol++) {
+			if (!isInBounds(schematic, iRow, iCol)) continue;
+			if (isGearSymbol(schematic[iRow]![iCol]!))
+				return { path: `${iRow}.${iCol}` };
+		}
+	}
+	return undefined;
+};
+
+// Optimized solution
+export const getPartNumbers = (
+	input: string,
+	check: (char: string) => boolean,
+) => {
+	const partNumbers: number[] = [];
+	const rows: string[] = input.split("\n");
+	const schematic = rows.map((row) => row.split(""));
+	rows.forEach((row, rowIndex) => {
+		const regexp = /\d+/g;
+		const matches = [...row.matchAll(regexp)];
+		matches.forEach((match) => {
+			const currentNumber = match[0];
+			if (match.index !== undefined) {
+				for (
+					let colIndex = match.index;
+					colIndex < match.index + currentNumber.length;
+					colIndex++
+				) {
+					if (hasAdjacentSymbol(schematic, rowIndex, colIndex, check)) {
+						partNumbers.push(Number(currentNumber));
+						break;
+					}
+				}
+			}
+		});
+	});
+	return partNumbers;
+};
+
+export const sumPartNumbers = (input: string) => {
+	const partNumbers = getPartNumbers(input, isSymbol);
+	return partNumbers.sum();
+};
+
+export const sumPartNumbers2 = (input: string) => {
 	const numbers: number[] = [];
 	const schematic: string[][] = input.split("\n").map((line) => line.split(""));
 	for (let row = 0; row < schematic.length; row++) {
@@ -39,7 +98,7 @@ export const getPartNumbers = (input: string) => {
 			const char = schematic[row]![col]!;
 			if (isNumber(char)) {
 				currentNumber += char;
-				if (hasAdjacentSymbol(schematic, row, col)) {
+				if (hasAdjacentSymbol(schematic, row, col, isSymbol)) {
 					isPartNumber = true;
 				}
 			} else {
@@ -56,4 +115,42 @@ export const getPartNumbers = (input: string) => {
 	return numbers.sum();
 };
 
-console.log(getPartNumbers(input));
+export const sumGearRatios = (input: string) => {
+	const partNumbersRecord: Map<string, number> = new Map();
+	const rows: string[] = input.split("\n");
+	const schematic = rows.map((row) => row.split(""));
+	let currentGearRatio = 0;
+	rows.forEach((row, rowIndex) => {
+		const regexp = /\d+/g;
+		const matches = [...row.matchAll(regexp)];
+		matches.forEach((match) => {
+			const currentNumber = match[0];
+			if (match.index !== undefined) {
+				for (
+					let colIndex = match.index;
+					colIndex < match.index + currentNumber.length;
+					colIndex++
+				) {
+					const gearSymbol = getAdjacentGearSymbol(
+						schematic,
+						rowIndex,
+						colIndex,
+					);
+					if (gearSymbol) {
+						const gearPath = gearSymbol.path;
+						const prevGearValue = partNumbersRecord.get(gearPath);
+						if (prevGearValue) {
+							currentGearRatio += prevGearValue * Number(currentNumber);
+							partNumbersRecord.delete(gearPath);
+						}
+						partNumbersRecord.set(gearPath, Number(currentNumber));
+						break;
+					}
+				}
+			}
+		});
+	});
+	return currentGearRatio;
+};
+console.log(sumPartNumbers(input));
+console.log(sumGearRatios(input));

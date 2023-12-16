@@ -1,16 +1,20 @@
 import { describe, expect, it } from "bun:test";
-import { getPartNumbers } from "./solutions";
+import { sumGearRatios, sumPartNumbers, sumPartNumbers2 } from "./solutions";
 
-describe("Day 1", () => {
+describe("Day 3", async () => {
+	const input = await Bun.file("test.txt").text();
 	it("Part One", async () => {
-		const input = await Bun.file("test.txt").text();
-		const res = getPartNumbers(input);
+		const res = sumPartNumbers(input);
 		expect(res).toEqual(4361);
 	});
 
-	// it("Part Two", async () => {
-	// 	const input = await Bun.file("test2.txt").text();
-	// 	const res = calibrateWithLetters(input);
-	// 	expect(res).toEqual(281);
-	// });
+	it("Part One Old", async () => {
+		const res = sumPartNumbers2(input);
+		expect(res).toEqual(4361);
+	});
+
+	it("Part Two", async () => {
+		const res = sumGearRatios(input);
+		expect(res).toEqual(467835);
+	});
 });
