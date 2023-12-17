@@ -19,4 +19,17 @@ Array.prototype.sum = function () {
 	throw new Error("Unsupported array type");
 };
 
+declare global {
+	interface String {
+		parseNumbers(): number[];
+	}
+}
+const digitsRegexp = /\d+/g;
+String.prototype.parseNumbers = function () {
+	if (this.length === 0) {
+		throw new Error("String is empty");
+	}
+	return [...this.matchAll(digitsRegexp)].map((match) => Number(match[0]));
+};
+
 export {};

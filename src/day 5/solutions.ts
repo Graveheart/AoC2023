@@ -1,16 +1,14 @@
 import "../utils.ts";
 const input = await Bun.file("input.txt").text();
-const digitsRegexp = /\d+/g;
-const parseNumbers = (input: string) =>
-	[...input.matchAll(digitsRegexp)].map((match) => Number(match[0]));
+
 const parseAlmanac = (input: string) => {
 	const categories = input.split("\n\n");
-	const seeds = parseNumbers(categories[0]);
+	const seeds = categories[0].parseNumbers();
 	const converters = categories.slice(1).map((d) =>
 		d
 			.split("\n")
 			.slice(1)
-			.map((list) => parseNumbers(list))
+			.map((list) => list.parseNumbers())
 			.sort(),
 	);
 	return { seeds, converters };
