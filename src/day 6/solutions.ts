@@ -14,9 +14,12 @@ export const findWinningSum = (input: string) => {
 		let wins = 0;
 		// start at 1 and finish at raceTime - 1
 		for (let speed = 1; speed < raceTime; ++speed) {
-			const remainingTime = raceTime - speed;
-			const myDistance = speed * remainingTime;
-			if (myDistance > distances[index]) {
+			const isWin = checkRace({
+				raceTime,
+				speed,
+				distanceToBeat: distances[index],
+			});
+			if (isWin) {
 				++wins;
 			}
 			// we cannot win any more if our time is getting less
@@ -29,4 +32,35 @@ export const findWinningSum = (input: string) => {
 	return totalSum;
 };
 
+type CheckRaceArgs = {
+	raceTime: number;
+	speed: number;
+	distanceToBeat: number;
+};
+
+const checkRace = ({ raceTime, speed, distanceToBeat }: CheckRaceArgs) => {
+	const remainingTime = raceTime - speed;
+	const myDistance = speed * remainingTime;
+	return myDistance > distanceToBeat;
+};
+
+export const findWinningWays = (input: string) => {
+	const { times, distances } = parseRaces(input);
+	const time = parseInt(times.join(""));
+	const distanceToBeat = parseInt(distances.join(""));
+	const minSpeed = distanceToBeat / time;
+	let wins = 0;
+	for (let speed = minSpeed; speed < time; ++speed) {
+		const isWin = checkRace({ raceTime: time, speed, distanceToBeat });
+		if (isWin) {
+			++wins;
+		}
+		// we cannot win any more if our time is getting less
+		else if (wins > 0) {
+			break;
+		}
+	}
+	return wins;
+};
 console.log(findWinningSum(input));
+console.log(findWinningWays(input));
