@@ -9,7 +9,7 @@ const parseAlmanac = (input: string) => {
 			.split("\n")
 			.slice(1)
 			.map((list) => list.parseNumbers())
-			.sort(),
+			.toSorted(),
 	);
 	return { seeds, converters };
 };
